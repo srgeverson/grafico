@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Gráficos</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script type="text/javascript" src="chart.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <script type="text/javascript">
+    window.onload = function () {
+
+      // document.getElementById('clear').addEventListener('click', function() {
+      // }, false);
+
+    };
+
+    const limparGrafico = () => {
+      let divChart = document.querySelector('#divChart');
+
+      let canvasChart = document.querySelector('#canvasChart');
+
+      let divLog = document.querySelector('#divLog');
+      divLog.style.display = "block";
+
+      if (canvasChart !== null)
+        canvasChart.remove();
+
+      let tagCanvas = document.createElement('canvas');
+      tagCanvas.setAttribute('id', 'canvasChart');
+      divChart.appendChild(tagCanvas);
+    }
+
+    const redimensinaTextArea = () => {
+      let canvasChart = document.querySelector('#canvasChart');
+      let log = document.querySelector('#log');
+      log.cols = 80;
+      log.rows = canvasChart.height / 15;
+    }
+
+    const limpar = () => {
+      limparGrafico();
+
+      let tipoDeGrafico = document.querySelector('#tipoDeGrafico');
+      tipoDeGrafico.value = 'selecione';
+      tipoDeGrafico.disabled = false;
+
+      let divLog = document.querySelector('#divLog');
+      divLog.style.display = "none";
+    }
+
+    const alteraTipoGrafico = () => {
+      const tipoDeGrafico = document.querySelector('#tipoDeGrafico');
+      console.log(tipoDeGrafico.value);
+      if (tipoDeGrafico.value !== 'selecione')
+        grafico(tipoDeGrafico.value);
+      else
+        tipoDeGrafico.disabled = true;
+    }
+
+    const visualizarEstatisticas = () => {
+      const tipoDeGrafico = document.querySelector('#tipoDeGrafico');
+      console.log(tipoDeGrafico.value);
+      if (tipoDeGrafico.value === 'selecione')
+        alert('É necessário escolher um tipode gráfico!');
+      else {
+        grafico(tipoDeGrafico.value);
+        solicitarDados();
+      }
+    }
+
+    const grafico = (type, labels, label, data) => {
+      if (!type)
+        return;
+
+      if (!labels)
+        labels = [];
+
+      if (!label)
+        label = labels.length + ' usuários que estão mais gerando alterações por minuto';
+
+      if (!data)
+        data = [];
+
+      limparGrafico();
+
+      try {
+        let ctx = document.querySelector('#canvasChart');
+        let myChart = new Chart(ctx, {
+          type,
+          data: {
+            labels,
+            datasets: [{
+              label,
+              data,
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+              ],
+              borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+              ],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+
+        redimensinaTextArea();
+      }
+      catch (exception) {
+        alert('Erro ao montar o gráfico: ' + exception)
+      }
+    }
+
+    const loading = () => {
+      console.log('Ops...');
+      let container = document.querySelector('#carregamento'),
+        w = window,
+        d = document,
+        e = d.documentElement,
+        g = d.getElementsByTagName('body')[0],
+        x = w.innerWidth || e.clientWidth || g.clientWidth,
+        y = w.innerHeight || e.clientHeight || g.clientHeight;
+
+      container.style.top = (y / 2) - (container.clientHeight / 2) + 'px';
+      container.style.left = (x / 2) - (container.clientWidth / 2) + 'px';
+      document.querySelector('#carregamento').style.display = 'none';
+    }
+
+    const solicitarDados = () => {
+
+      let source = new EventSource('meu-updater.php');
+
+      if (typeof (EventSource) !== "undefined") {
+
+        let textarea = document.querySelector('#log');
+
+        source.addEventListener('message', function (e) {
+          let data = JSON.parse(e.data);
+
+          let listaNomes = data.usuario.dados.map(x => x.label);
+          let listaDados = data.usuario.dados.map(x => x.value);
+
+          grafico(document.querySelector('#tipoDeGrafico').value, listaNomes, null, listaDados);
+
+          textarea.value += 'Nome=' + data.usuario.nome + ' | ' + 'Dados=' + listaDados + ' | ' + 'Data=' + data.usuario.data + ' | ';
+
+        }, false);
+
+        source.addEventListener('open', function (e) {
+
+          textarea.value += 'Open...';
+
+        }, false);
+
+        source.addEventListener('error', function (e) {
+          if (e.readyState == EventSource.CLOSED) {
+            textarea.value += 'Close...';
+          }
+        }, false);
+      } else {
+        console.log('Sorry! No server-sent events support..')
+      }
+    }
+
+  </script>
+</head>
+
+<body onload="loading();">
+  <div class="containner">
+    <div class="header">
+      <span id="descricao">Gráficos em Tempo Real!</span>
+    </div>
+    <div class="form">
+      <label for="tipoDeGrafico">Tipo de Gráfico</label>
+      <select id="tipoDeGrafico" onchange="alteraTipoGrafico();">
+        <option value="selecione">Escolha um tipo</option>
+        <option value="bar">Gráfico de Barra</option>
+        <option value="doughnut">Gráfico de Rosca</option>
+        <option value="line">Gráfico de Linha</option>
+        <option value="pie">Gráfico de Pizza</option>
+      </select>
+      <div class="buttons">
+        <button type="button" onclick="visualizarEstatisticas();">Visualizar Estatísticas</button>
+        <button type="button" onclick="limpar();">Limpar Estatísticas</button>
+      </div>
+    </div>
+    <div class="content">
+      <div id="divChart"></div>
+      <div id="divLog">
+        <textarea id="log" name="logs" cols="1" rows="1" disabled></textarea>
+      </div>
+    </div>
+  </div>
+  <div id="carregamento">
+    <img src="loading.gif" alt="Ícone de carregamento" />
+  </div>
+</body>
+
+</html>
