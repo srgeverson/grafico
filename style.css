@@ -37,14 +37,27 @@
 }
 
 #carregamento {
-    position: fixed;
-    display: block;
-    top: 0;
-    left: 0;
-    width: 98%;
-    height: 98%;
-    background-color: rgba(0, 0, 0, 0.6);
-    text-align: 'center';
-    justify-content: 'center';
-    border-radius: 1rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background-color: antiquewhite;
  }
+
+ #carregamento article {
+     position: fixed;
+     display: block;
+     top: 5px;
+     width: 98%;
+     height: 98%;
+     background-color: rgba(0, 0, 0, 0.6);
+     text-align: 'center';
+     justify-content: 'center';
+     border-radius: 1rem;
+ }
+
+ #carregamento img {
+    position: fixed;
+    top:50%;
+    right: 50%;
+    transform: translate(50%, -50%);
+}

@@ -8,12 +8,6 @@
   <script type="text/javascript" src="chart.min.js"></script>
   <link rel="stylesheet" type="text/css" href="style.css" />
   <script type="text/javascript">
-    window.onload = function () {
-
-      // document.getElementById('clear').addEventListener('click', function() {
-      // }, false);
-
-    };
 
     const limparGrafico = () => {
       let divChart = document.querySelector('#divChart');
@@ -129,18 +123,20 @@
     }
 
     const loading = () => {
-      console.log('Ops...');
-      let container = document.querySelector('#carregamento'),
-        w = window,
-        d = document,
-        e = d.documentElement,
-        g = d.getElementsByTagName('body')[0],
-        x = w.innerWidth || e.clientWidth || g.clientWidth,
-        y = w.innerHeight || e.clientHeight || g.clientHeight;
+      setTimeout(() => {
+        console.log("Carregando o conteúdo...");
+        let divCarregamento = document.querySelector('#carregamento'),
+          w = window,
+          d = document,
+          e = d.documentElement,
+          g = d.getElementsByTagName('body')[0],
+          x = w.innerWidth || e.clientWidth || g.clientWidth,
+          y = w.innerHeight || e.clientHeight || g.clientHeight;
 
-      container.style.top = (y / 2) - (container.clientHeight / 2) + 'px';
-      container.style.left = (x / 2) - (container.clientWidth / 2) + 'px';
-      document.querySelector('#carregamento').style.display = 'none';
+        divCarregamento.style.top = (y / 2) - (divCarregamento.clientHeight / 2) + 'px';
+        divCarregamento.style.left = (x / 2) - (divCarregamento.clientWidth / 2) + 'px';
+        document.querySelector('#carregamento').style.display = 'none';
+      }, "5000")
     }
 
     const solicitarDados = () => {
@@ -209,7 +205,9 @@
     </div>
   </div>
   <div id="carregamento">
-    <img src="loading.gif" alt="Ícone de carregamento" />
+    <article>
+      <img id="loading" src="loading.gif" alt="Ícone de carregamento" />
+    </article>
   </div>
 </body>
 
