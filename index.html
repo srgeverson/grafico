@@ -147,7 +147,8 @@
 
         let textarea = document.querySelector('#log');
 
-        source.addEventListener('message', function (e) {
+        source.addEventListener('message', (e) => {
+          
           let data = JSON.parse(e.data);
 
           let listaNomes = data.usuario.dados.map(x => x.label);
@@ -159,19 +160,19 @@
 
         }, false);
 
-        source.addEventListener('open', function (e) {
+        source.addEventListener('open', (e) => {
 
-          textarea.value += 'Open...';
+          textarea.value += 'Solicitando...';
 
         }, false);
 
-        source.addEventListener('error', function (e) {
+        source.addEventListener('error', (e) => {
           if (e.readyState == EventSource.CLOSED) {
-            textarea.value += 'Close...';
+            textarea.value += 'Finalizando solicitação...';
           }
         }, false);
       } else {
-        console.log('Sorry! No server-sent events support..')
+        console.log('Desculpe! Seu navegador não suporta Server-Sent Events..')
       }
     }
 
