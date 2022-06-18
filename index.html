@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gráficos</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <script type="text/javascript" src="chart.min.js"></script>
@@ -14,8 +15,8 @@
 
       let canvasChart = document.querySelector('#canvasChart');
 
-      let divLog = document.querySelector('#divLog');
-      divLog.style.display = "block";
+      let textArea = document.querySelector('#log');
+      textArea.style.display = "block";
 
       if (canvasChart !== null)
         canvasChart.remove();
@@ -25,13 +26,6 @@
       divChart.appendChild(tagCanvas);
     }
 
-    const redimensinaTextArea = () => {
-      let canvasChart = document.querySelector('#canvasChart');
-      let log = document.querySelector('#log');
-      log.cols = canvasChart.width / 9;
-      log.rows = canvasChart.height / 15;
-    }
-
     const limpar = () => {
       limparGrafico();
 
@@ -39,8 +33,8 @@
       tipoDeGrafico.value = 'selecione';
       tipoDeGrafico.disabled = false;
 
-      let divLog = document.querySelector('#divLog');
-      divLog.style.display = "none";
+      let textArea = document.querySelector('#log');
+      textArea.style.display = "none";
     }
 
     const alteraTipoGrafico = () => {
@@ -115,7 +109,6 @@
           }
         });
 
-        redimensinaTextArea();
       }
       catch (exception) {
         alert('Erro ao montar o gráfico: ' + exception)
@@ -153,7 +146,7 @@
         let textarea = document.querySelector('#log');
 
         source.addEventListener('message', (e) => {
-          
+
           let data = JSON.parse(e.data);
 
           let listaNomes = data.usuario.dados.map(x => x.label);
@@ -185,31 +178,38 @@
 </head>
 
 <body onload="loading();">
-  <div class="containner">
-    <div class="header">
-      <h3 id="descricao">Gráficos em Tempo Real!</h3>
-    </div>
-    <div class="form">
-      <label for="tipoDeGrafico">Tipo de Gráfico</label>
-      <select id="tipoDeGrafico" onchange="alteraTipoGrafico();">
-        <option value="selecione">Escolha um tipo</option>
-        <option value="bar">Gráfico de Barra</option>
-        <option value="doughnut">Gráfico de Rosca</option>
-        <option value="line">Gráfico de Linha</option>
-        <option value="pie">Gráfico de Pizza</option>
-      </select>
-      <div class="buttons">
+  <header>
+    <h3 id="descricao">Gráficos em Tempo Real!</h3>
+  </header>
+  <main class="row">
+    <section class="col-12">
+      <article id="tipo">
+        <label for="tipoDeGrafico">Tipo de Gráfico</label>
+        <select id="tipoDeGrafico" onchange="alteraTipoGrafico();">
+          <option value="selecione">Escolha um tipo</option>
+          <option value="bar">Gráfico de Barra</option>
+          <option value="doughnut">Gráfico de Rosca</option>
+          <option value="line">Gráfico de Linha</option>
+          <option value="pie">Gráfico de Pizza</option>
+        </select>
+      </article>
+      <article id="botoes">
         <button type="button" onclick="visualizarEstatisticas();">Visualizar Estatísticas</button>
         <button type="button" onclick="limpar();">Limpar Estatísticas</button>
+      </article>
+    </section>
+    <section class="col-12 col-12">
+      <div class="col-s-6">
+        <div id="divChart"></div>
       </div>
-    </div>
-    <div class="content">
-      <div id="divChart"></div>
-      <div id="divLog">
-        <textarea id="log" name="logs" cols="1" rows="1" disabled></textarea>
+      <div class="col-s-6">
+        <textarea id="log" name="logs" rows="10" disabled></textarea>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
+  <footer>
+    &copy; Geverson Souza 2022
+  </footer>
   <div id="carregamento">
     <article>
       <img id="loading" src="loading.gif" alt="Ícone de carregamento" />
