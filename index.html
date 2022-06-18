@@ -28,7 +28,7 @@
     const redimensinaTextArea = () => {
       let canvasChart = document.querySelector('#canvasChart');
       let log = document.querySelector('#log');
-      log.cols = 80;
+      log.cols = canvasChart.width / 9;
       log.rows = canvasChart.height / 15;
     }
 
@@ -136,7 +136,12 @@
         divCarregamento.style.top = (y / 2) - (divCarregamento.clientHeight / 2) + 'px';
         divCarregamento.style.left = (x / 2) - (divCarregamento.clientWidth / 2) + 'px';
         document.querySelector('#carregamento').style.display = 'none';
-      }, "5000")
+
+        let tipoDeGrafico = document.querySelector('#tipoDeGrafico');
+        tipoDeGrafico.value = 'pie';
+        tipoDeGrafico.onchange();
+
+      }, "1000")
     }
 
     const solicitarDados = () => {
