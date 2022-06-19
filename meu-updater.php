@@ -25,6 +25,15 @@ while (true) {
                 ["label" => 'Nathan',"value" => rand(1, 100)] ,
                 ["label" => 'Manuel',"value" => rand(1, 100)]
             );
+            $usuario->teste = array(
+                ["label" => 'Milena', "value" => array([rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100),rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100)])],
+                ["label" => 'Márcia', "value" => array([rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100),rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100)])],
+                ["label" => 'Natália', "value" => array([rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100),rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100)])], 
+                ["label" => 'Geverson', "value" => array([rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100),rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100)])],
+                ["label" => 'Nathan', "value" => array([rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100),rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100)])],
+                ["label" => 'Manuel', "value" => array([rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100),rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100), rand(1, 100)])]
+            );
+            
             echo 'data: ' . $usuario->getJSONEncode() . "\n\n";
         }
     

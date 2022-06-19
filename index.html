@@ -7,6 +7,7 @@
   <title>Gráficos</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <script type="text/javascript" src="chart.min.js"></script>
+  <script type="text/javascript" src="graficos.js"></script>
   <link rel="stylesheet" type="text/css" href="style.css" />
   <script type="text/javascript">
 
@@ -38,12 +39,16 @@
     }
 
     const alteraTipoGrafico = () => {
-      const tipoDeGrafico = document.querySelector('#tipoDeGrafico');
-      console.log(tipoDeGrafico.value);
-      if (tipoDeGrafico.value !== 'selecione')
-        grafico(tipoDeGrafico.value);
-      else
-        tipoDeGrafico.disabled = true;
+      const tipoDeGrafico = document.querySelector('#tipoDeGrafico').value;
+      switch (tipoDeGrafico) {
+        case 'line1':
+          graficoMassaDeDados(limparGrafico, tipoDeGrafico);
+          break;
+
+        default:
+          grafico(limparGrafico, tipoDeGrafico);
+          break;
+      }
     }
 
     const visualizarEstatisticas = () => {
@@ -52,66 +57,7 @@
       if (tipoDeGrafico.value === 'selecione')
         alert('É necessário escolher um tipode gráfico!');
       else {
-        grafico(tipoDeGrafico.value);
         solicitarDados();
-      }
-    }
-
-    const grafico = (type, labels, label, data) => {
-      if (!type)
-        return;
-
-      if (!labels)
-        labels = [];
-
-      if (!label)
-        label = labels.length + ' usuários que estão mais gerando alterações por minuto';
-
-      if (!data)
-        data = [];
-
-      limparGrafico();
-
-      try {
-        let ctx = document.querySelector('#canvasChart');
-        let myChart = new Chart(ctx, {
-          type,
-          data: {
-            labels,
-            datasets: [{
-              label,
-              data,
-              backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-              ],
-              borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-              ],
-              borderWidth: 1
-            }]
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: true
-              }
-            }
-          }
-        });
-
-      }
-      catch (exception) {
-        alert('Erro ao montar o gráfico: ' + exception)
       }
     }
 
@@ -131,7 +77,7 @@
         document.querySelector('#carregamento').style.display = 'none';
 
         let tipoDeGrafico = document.querySelector('#tipoDeGrafico');
-        tipoDeGrafico.value = 'pie';
+        tipoDeGrafico.value = 'line1';
         tipoDeGrafico.onchange();
 
       }, "1000")
@@ -148,13 +94,21 @@
         source.addEventListener('message', (e) => {
 
           let data = JSON.parse(e.data);
-
           let listaNomes = data.usuario.dados.map(x => x.label);
           let listaDados = data.usuario.dados.map(x => x.value);
+          let tipoDeGrafico = document.querySelector('#tipoDeGrafico').value;
+          switch (tipoDeGrafico) {
+            case 'line1':
+              graficoMassaDeDados(limparGrafico, 'line', listaNomes, null, data.usuario.teste.map(x => x.value));
+              textarea.value += 'Nome=' + data.usuario.nome + ' | ' + 'Dados=' + data.usuario.teste.map(x => x.value) + ' | ' + 'Data=' + data.usuario.data + ' | ';
+              break;
 
-          grafico(document.querySelector('#tipoDeGrafico').value, listaNomes, null, listaDados);
+            default:
+              grafico(limparGrafico, tipoDeGrafico, listaNomes, null, listaDados);
+              textarea.value += 'Nome=' + data.usuario.nome + ' | ' + 'Dados=' + data.usuario.teste + ' | ' + 'Data=' + data.usuario.data + ' | ';
+              break;
+          }
 
-          textarea.value += 'Nome=' + data.usuario.nome + ' | ' + 'Dados=' + listaDados + ' | ' + 'Data=' + data.usuario.data + ' | ';
 
         }, false);
 
@@ -190,6 +144,7 @@
           <option value="bar">Gráfico de Barra</option>
           <option value="doughnut">Gráfico de Rosca</option>
           <option value="line">Gráfico de Linha</option>
+          <option value="line1">Gráfico de Linha com Massa de Dados</option>
           <option value="pie">Gráfico de Pizza</option>
         </select>
       </article>
